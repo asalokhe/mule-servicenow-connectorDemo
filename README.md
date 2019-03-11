@@ -1,4 +1,4 @@
-#Servicenow Instance details 
+# Servicenow Instance details 
 1.	Click on “developer.servicenow.com” and login.
 2.	Click on the Manage tab and Instance under it as show in the below diagram.
 
@@ -14,7 +14,7 @@
 ![Configuration Details](mule-servicenow-connectorDemo/Images/incidentdetails.png)
 
 
-#Configuring/developing Anypoint studio	
+# Configuring/developing Anypoint studio	
 1.	Add the service now module in the workspace.
 
 ![Configuration Details](mule-servicenow-connectorDemo/Images/addModuleFromExchange.png)
