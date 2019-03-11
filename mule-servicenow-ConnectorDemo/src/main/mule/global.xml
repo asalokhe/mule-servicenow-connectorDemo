@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cf1410f8-058c-455f-9251-5b6bf415659a" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<servicenow:config name="ServiceNow_Config" doc:name="ServiceNow Config" doc:id="c1804dd4-74aa-4285-9f43-f82564cb490f" >
+		<servicenow:basic-connection username="${servicenow.username}" password="${secure::servicenow.password}" serviceAddress="${servicenow.serviceAddress}" serviceNowVersion="HELSINKI">
+			<servicenow:transport >
+				<servicenow:basic-auth-http-message-dispatcher-provider username="${servicenow.username}" password="${secure::servicenow.password}" />
+			</servicenow:transport>
+		</servicenow:basic-connection>
+	</servicenow:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="32d3309e-96dd-465e-b975-c317bca8981f" file="secure-config.yaml" key="${secret.key}" >
+		<secure-properties:encrypt algorithm="Blowfish" mode="ECB" />
+	</secure-properties:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="5f98c614-46dc-4d55-948a-3484680833d7" file="remote-services-config.yaml" />
+</mule>

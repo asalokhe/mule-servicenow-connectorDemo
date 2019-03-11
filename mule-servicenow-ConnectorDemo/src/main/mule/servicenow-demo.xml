@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="servicenow-demoFlow" doc:id="d0dbef3f-a8f0-41c8-8bcb-719c1395a6b7" >
+		<http:listener doc:name="Listener" doc:id="12cdc6df-ba8c-4dc0-b0b2-844d47688dbb" config-ref="HTTP_Listener_config" path="/incident/create"/>
+		<logger level="INFO" doc:name="Logger" doc:id="952a4966-1ac6-4d53-9329-3fd2bc63f182" />
+		<ee:transform doc:name="Transform Message" doc:id="2f714de1-857a-4ea8-abb0-76df830e2429" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.service-now.com/incident
+---
+{
+	ns0#insert: {
+		ns0#comments: "This is very urgent. Please resolve it quickly",
+		ns0#short_description: "Cannot Access the VPN-Anup",
+		ns0#state: "New"
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<servicenow:invoke service="incident" operation="insert" doc:name="Invoke" doc:id="6cc3a5dc-0cec-4ea4-9bc0-b2753777d435" config-ref="ServiceNow_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="39f31054-e663-439e-a201-0060716bc0f1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e40e02b0-d2c4-4017-939c-267c2c8ea8ac" />
+	</flow>
+	<flow name="servicenow-demoFlow1" doc:id="31bfaca1-86ee-4fd0-bb36-134f37be9b99" >
+		<http:listener doc:name="Listener" doc:id="2fab48fd-dde8-43e8-b5b1-92995c09628e" config-ref="HTTP_Listener_config" path="/incident/get"/>
+		<set-variable value="#[attributes.queryParams.incNum]" doc:name="setIncidentNumber" doc:id="d57274fa-f511-4e5b-864b-eaf5358d390e" variableName="incNum"/>
+		<ee:transform doc:name="Transform Message" doc:id="0a9946bf-3fe7-442e-9a74-fa138414b2f7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.service-now.com/incident
+---
+{
+	ns0#getRecords: {
+		ns0#number: vars.incNum
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<servicenow:invoke doc:name="Invoke" doc:id="fe345627-815d-4f94-a776-f9669b2aa4ff" config-ref="ServiceNow_Config" service="incident" operation="getRecords"/>
+		<ee:transform doc:name="Transform Message" doc:id="0b49b3ed-5be3-4628-bafb-28625ad62299" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
