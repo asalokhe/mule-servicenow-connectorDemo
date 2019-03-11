@@ -8,7 +8,6 @@ http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="servicenow-demoFlow" doc:id="d0dbef3f-a8f0-41c8-8bcb-719c1395a6b7" >
 		<http:listener doc:name="Listener" doc:id="12cdc6df-ba8c-4dc0-b0b2-844d47688dbb" config-ref="HTTP_Listener_config" path="/incident/create"/>
-		<logger level="INFO" doc:name="Logger" doc:id="952a4966-1ac6-4d53-9329-3fd2bc63f182" />
 		<ee:transform doc:name="Transform Message" doc:id="2f714de1-857a-4ea8-abb0-76df830e2429" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -33,7 +32,7 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="e40e02b0-d2c4-4017-939c-267c2c8ea8ac" />
+		<logger level="INFO" doc:name="Logger" doc:id="e7681d0d-d843-4ce7-81de-ee99fece2bc3" message="#[payload]"/>
 	</flow>
 	<flow name="servicenow-demoFlow1" doc:id="31bfaca1-86ee-4fd0-bb36-134f37be9b99" >
 		<http:listener doc:name="Listener" doc:id="2fab48fd-dde8-43e8-b5b1-92995c09628e" config-ref="HTTP_Listener_config" path="/incident/get"/>
@@ -60,5 +59,6 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="5438c9b3-0f65-4e4c-a571-ad71e86372f2" message="#[payload]"/>
 	</flow>
 </mule>
